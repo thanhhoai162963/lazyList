@@ -14,6 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -36,14 +41,33 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LazyColumnTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android", modifier = Modifier.padding(innerPadding)
-                    )
+                Scaffold(modifier = Modifier.fillMaxSize()) { it ->
+                    DemoGrid()
                 }
             }
         }
     }
+}
+
+@Composable
+fun DemoGrid() {
+    val items = remember {
+        mutableStateListOf(Demo())
+    }
+    for (i in 0..100) {
+        items.add(Demo(content = "Android"))
+    }
+  /*  LazyVerticalGrid(columns = GridCells.Fixed(3)) {
+        items(items, key = { it.id }) { it ->
+            Text(text = it.content ?: "Android")
+        }
+    }*/
+    LazyHorizontalGrid(rows = GridCells.Fixed(3)) {
+        items(items, key = { it.id }) { it ->
+            Text(text = it.content ?: "Android")
+        }
+    }
+
 }
 
 @Composable
@@ -61,12 +85,12 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             onClick = { items.add(1, Demo(content = "iOS")) }) {
             Text(text = "DEMO")
         }
-        LazyColumn(
+        LazyRow(
             modifier = Modifier
                 .wrapContentSize()
                 .statusBarsPadding(),
             contentPadding = PaddingValues(horizontal = 15.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             item {
                 Text(text = "Header")
@@ -78,7 +102,20 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     }
 }
 
-data class Demo(val id: String = UUID.randomUUID().toString(), var content: String? = null)
+
+data class Demo(val id: String = UUID.randomUUID().toString(), var content: String? = null) {
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other)
+    }
+
+    override fun toString(): String {
+        return super.toString()
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
