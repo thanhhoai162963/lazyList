@@ -62,10 +62,11 @@ fun DemoGrid() {
             Text(text = it.content ?: "Android")
         }
     }*/
-    LazyHorizontalGrid(rows = GridCells.Fixed(3)) {
+    LazyHorizontalGrid(rows = GridCells.Adaptive(minSize = 30.dp)) {
         items(items, key = { it.id }) { it ->
             Text(text = it.content ?: "Android")
         }
+
     }
 
 }
