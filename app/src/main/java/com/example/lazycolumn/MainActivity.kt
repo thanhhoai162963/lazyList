@@ -1,6 +1,7 @@
 package com.example.lazycolumn
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,54 +22,80 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.example.lazycolumn.ui.theme.LazyColumnTheme
+import com.example.lazycolumn.ui.theme.view.HomeScreen
 import java.util.UUID
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        Log.d("bbb","onCreate")
+
         setContent {
-            LazyColumnTheme {
-                DemoCoil()
-            }
+            HomeScreen()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("bbb","onDestroy")
     }
 }
 
 @Composable
 fun DemoCoil() {
-    AsyncImage(
+  /*  AsyncImage(
         model = "https://img.idesign.vn/2023/02/idesign_logogg_1.jpg",
         contentDescription = "",
-    )
+    )*/
     //cache
-
-    Box(Modifier.fillMaxSize()) {
-        SubcomposeAsyncImage( // load bat dong bo
-            modifier = Modifier.align(Alignment.Center),
-            model = ImageRequest.Builder(LocalContext.current).crossfade(true)
-                .data("https://example.com/image.jpg").build(),
-            loading = {
-                CircularProgressIndicator()
-            },
-            error = {
-                Text(text = "error !")
-            },
-            contentDescription = "stringResource(R.string.description)"
-        )
+    var input by remember {
+        mutableStateOf("")
     }
+    Box(Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.align(Alignment.Center)) {
+
+            Text(text = "", color = Color.Red, fontSize = 20.sp)
+            TextField(value = input, onValueChange = {
+                input = it
+            })
+            SubcomposeAsyncImage( // load bat dong bo
+                model = ImageRequest.Builder(LocalContext.current).crossfade(true)
+                    .data("https://example.com/image.jpg").build(),
+                loading = {
+                    CircularProgressIndicator()
+                },
+                error = {
+                    Text(text = "error !")
+                },
+                contentDescription = "stringResource(R.string.description)"
+            )
+        }
+
+    }
+
 }
 
 @Composable
